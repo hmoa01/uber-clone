@@ -1,8 +1,7 @@
 {
-  "extends": "./node_modules/expo/tsconfig.base",
+  "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
-    "forceConsistentCasingInFileNames": true,
     "paths": {
       "@/*": [
         "./*"
@@ -12,6 +11,7 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    "nativewind-env.d.ts"
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
   ]
 }
