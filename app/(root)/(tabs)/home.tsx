@@ -1,12 +1,18 @@
-import { Text } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SignedIn, SignedOut, useUser } from '@clerk/clerk-expo';
+import { Link } from 'expo-router';
+import { Text, View } from 'react-native';
 
-const Home = () => {
+import { SignOutButton } from '@/components/SignOutButton';
+
+export default function Page() {
+  const { user } = useUser();
+
   return (
-    <SafeAreaView>
-      <Text>Home</Text>
-    </SafeAreaView>
+    <View>
+      <SignedIn>
+        <Text>Hello {user?.emailAddresses[0].emailAddress}</Text>
+        <SignOutButton />
+      </SignedIn>
+    </View>
   );
-};
-
-export default Home;
+}
