@@ -21,3 +21,16 @@ expo-env.d.ts
 
 # env
 .env
+
+
+# iOS
+*.xcodeproj
+*.xcworkspace
+ios/build/
+ios/Pods/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+xcuserdata/
+ubber-clone/
