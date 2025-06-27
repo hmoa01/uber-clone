@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { FlatList, Text, View } from 'react-native';
+import { FlatList, View } from 'react-native';
 
 import CustomButton from '@/components/CustomButton';
 import DriverCard from '@/components/DriverCard';
@@ -24,7 +24,9 @@ const ConfirmRide = () => {
           <View className="mx-5 mt-10">
             <CustomButton
               title="Select Ride"
-              onPress={() => router.push('/(root)/book-ride')}
+              onPress={() => {
+                router.push('/(root)/book-ride');
+              }}
             />
           </View>
         )}

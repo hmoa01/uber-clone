@@ -95,21 +95,49 @@ export const calculateDriverTimes = async ({
 
   try {
     const timesPromises = markers.map(async (marker) => {
-      const responseToUser = await fetch(
-        `https://maps.googleapis.com/maps/api/directions/json?origin=${marker.latitude},${marker.longitude}&destination=${userLatitude},${userLongitude}&key=${directionsAPI}`
-      );
-      const dataToUser = await responseToUser.json();
-      const timeToUser = dataToUser.routes[0].legs[0].duration.value; // Time in seconds
+      const getDuration = async (
+        originLat: number,
+        originLng: number,
+        destLat: number,
+        destLng: number
+      ): Promise<number | null> => {
+        const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${originLat},${originLng}&destination=${destLat},${destLng}&key=${directionsAPI}`;
+        const res = await fetch(url);
+        const data = await res.json();
 
-      const responseToDestination = await fetch(
-        `https://maps.googleapis.com/maps/api/directions/json?origin=${userLatitude},${userLongitude}&destination=${destinationLatitude},${destinationLongitude}&key=${directionsAPI}`
-      );
-      const dataToDestination = await responseToDestination.json();
-      const timeToDestination =
-        dataToDestination.routes[0].legs[0].duration.value; // Time in seconds
+        if (data.status !== 'OK') {
+          console.warn('Google Maps API error:', data.status, url);
+          return null;
+        }
 
-      const totalTime = (timeToUser + timeToDestination) / 60; // Total time in minutes
-      const price = (totalTime * 0.5).toFixed(2); // Calculate price based on time
+        if (!data.routes?.[0]?.legs?.[0]?.duration?.value) {
+          console.warn('No duration found in route data:', data);
+          return null;
+        }
+
+        return data.routes[0].legs[0].duration.value;
+      };
+
+      const timeToUser = await getDuration(
+        marker.latitude,
+        marker.longitude,
+        userLatitude,
+        userLongitude
+      );
+
+      const timeToDestination = await getDuration(
+        userLatitude,
+        userLongitude,
+        destinationLatitude,
+        destinationLongitude
+      );
+
+      if (timeToUser === null || timeToDestination === null) {
+        return { ...marker, time: null, price: null };
+      }
+
+      const totalTime = (timeToUser + timeToDestination) / 60;
+      const price = (totalTime * 0.5).toFixed(2);
 
       return { ...marker, time: totalTime, price };
     });
