@@ -1,8 +1,6 @@
 import { Stripe } from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-06-20',
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(request: Request) {
   const body = await request.json();
@@ -50,7 +48,6 @@ export async function POST(request: Request) {
       paymentIntent: paymentIntent,
       ephemeralKey: ephemeralKey,
       customer: customer.id,
-      publishableKey: process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY,
     })
   );
 }
